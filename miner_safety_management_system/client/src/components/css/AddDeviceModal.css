@@ -1,0 +1,51 @@
+.modal-backdrop-debug {
+  position: fixed !important;
+  inset: 0 !important;
+  background: rgba(0,0,0,0.65) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 2147483646 !important;
+}
+
+.modal-debug {
+  background: #fff !important;
+  border-radius: 10px !important;
+  padding: 24px !important;
+  width: 92% !important;
+  max-width: 980px !important;
+  box-shadow: 0 18px 48px rgba(0,0,0,0.6) !important;
+  z-index: 2147483647 !important;
+  position: relative !important;
+}
+
+.modal-debug h3 {
+  margin-top: 0 !important;
+  color: #111 !important;
+}
+
+.modal-debug .debug-badge {
+  position: absolute !important;
+  top: 8px !important;
+  right: 8px !important;
+  background: #e11 !important;
+  color: #fff !important;
+  padding: 6px 10px !important;
+  border-radius: 4px !important;
+  z-index: 2147483648 !important;
+}
+
+.modal-debug .table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+}
+
+.modal-debug .table th, .modal-debug .table td {
+  border-bottom: 1px solid #eee !important;
+  padding: 8px 6px !important;
+}
+
+.modal-debug .text-muted {
+  color: #777 !important;
+  text-align: center !important;
+}

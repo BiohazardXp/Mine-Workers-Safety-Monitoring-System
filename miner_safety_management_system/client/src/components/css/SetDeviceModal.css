@@ -1,0 +1,35 @@
+.sdm-backdrop {
+  position: fixed !important;
+  inset: 0 !important;
+  background: rgba(0,0,0,0.45) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 99999 !important;
+}
+.sdm-modal {
+  background: #fff !important;
+  padding: 18px !important;
+  border-radius: 8px !important;
+  width: 90% !important;
+  max-width: 900px !important;
+  max-height: 90vh !important;
+  overflow: auto !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4) !important;
+  position: relative !important;
+}
+.sdm-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.sdm-close { background:transparent; border:none; font-size:22px; cursor:pointer; }
+.sdm-section { margin-bottom:14px; }
+.sdm-table { width:100%; border-collapse: collapse; }
+.sdm-table th, .sdm-table td { border: 1px solid #ddd; padding:8px; text-align:left; }
+.sdm-assign-select { display:flex; gap:8px; align-items:center; }
+.btn { cursor:pointer; }
+
+/* Error message styling */
+.sdm-error { color: red; margin-bottom: 8px; }
+
+/* small screens */
+@media (max-width: 600px) {
+  .sdm-modal { width: 96% !important; padding: 12px !important; }
+}

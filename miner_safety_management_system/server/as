@@ -1,0 +1,156 @@
+/*
+  ESP32 → MQTT JSON Publisher (Improved)
+
+  • Wi-Fi connect with timeout
+  • Exponential back-off for MQTT reconnects
+  • PubSubClient buffer bumped to 512 bytes
+  • JSON document sized to 384 bytes
+  • Non-blocking loop with periodic publish
+*/
+
+#define MQTT_MAX_PACKET_SIZE 512    // ↑ before including PubSubClient
+#include <WiFi.h>
+#include <PubSubClient.h>
+#include <ArduinoJson.h>
+
+// Wi-Fi credentials
+const char* ssid     = "HUAWEI-4592";
+const char* password = "77805052";
+
+// MQTT broker settings
+const char*  mqttServer = "192.168.8.100";
+const uint16_t mqttPort = 1883;
+const char*  mqttTopic  = "health/device2";
+
+// Device/MQTT client ID
+const char* deviceName = "device2";
+
+// Globals
+WiFiClient   wifiClient;
+PubSubClient mqtt(wifiClient);
+
+unsigned long lastPublish     = 0;
+const unsigned long pubInterval = 1000;   // 1 s
+unsigned long mqttBackoff     = 1000;     // start 1 s
+
+// Forward declarations
+void connectWiFiWithTimeout(uint32_t timeoutMs);
+bool connectMQTT();
+float randf(float minVal, float maxVal);
+
+void setup() {
+  Serial.begin(115200);
+  delay(500);
+  Serial.println("\n— ESP32 JSON → MQTT Publisher —");
+
+  // Boost PubSubClient buffer
+  mqtt.setBufferSize(MQTT_MAX_PACKET_SIZE);
+  mqtt.setServer(mqttServer, mqttPort);
+
+  // Connect Wi-Fi then MQTT
+  connectWiFiWithTimeout(20000);
+  if (!connectMQTT()) {
+    Serial.println("Initial MQTT connect failed. Continuing and retrying in loop.");
+  }
+}
+
+void loop() {
+  // Keep MQTT alive
+  if (!mqtt.connected()) {
+    if (connectMQTT()) {
+      mqttBackoff = 1000;  // reset backoff on success
+    } else {
+      mqttBackoff = min(mqttBackoff * 2, 30000UL);
+      delay(mqttBackoff);
+    }
+  }
+  mqtt.loop();
+
+  // Publish every pubInterval ms
+  if (millis() - lastPublish >= pubInterval && mqtt.connected()) {
+    lastPublish = millis();
+
+    // Build nested JSON
+    StaticJsonDocument<384> doc;
+    JsonObject root = doc.createNestedObject(deviceName);
+    JsonObject vitals = root.createNestedObject("vitals");
+    JsonObject env    = root.createNestedObject("environment");
+
+    // Vitals
+    vitals["bodyTemp"]  = randf(36.0, 37.5);
+    vitals["heartRate"] = randf(60,   100);
+
+    // Environment
+    env["carbonMonoxide"]  = randf(0,  15);
+    env["ammonia"]         = randf(0,  50);
+    env["hydrogenSulfide"] = randf(0,  50);
+    env["sulphurDioxide"]  = randf(0,  50);
+    env["nitrogenDioxide"] = randf(0,  50);
+    env["methane"]         = randf(0,  50);
+    env["temperature"]     = randf(20, 40);
+    env["pressure"]        = randf(950,1050);
+    env["humidity"]        = randf(20, 80);
+
+    // Serialize and publish
+    char buffer[512];
+    size_t len = serializeJson(doc, buffer);
+    Serial.printf("Payload size: %u bytes\n", (unsigned)len);
+
+    bool ok = mqtt.publish(mqttTopic, buffer, len);
+    Serial.print("Publish result: ");
+    Serial.println(ok ? "SUCCESS" : "FAILURE");
+    if (ok) {
+      Serial.println(buffer);
+    }
+  }
+}
+
+//--------------------------------------------------------------------------------
+// Connect to Wi-Fi with timeout (restarts on failure)
+//--------------------------------------------------------------------------------
+void connectWiFiWithTimeout(uint32_t timeoutMs) {
+  Serial.printf("Connecting to Wi-Fi SSID \"%s\" …\n", ssid);
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+
+  uint32_t start = millis();
+  while (WiFi.status() != WL_CONNECTED && millis() - start < timeoutMs) {
+    delay(250);
+    Serial.print(".");
+  }
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("\nWi-Fi connection timed out — restarting");
+    delay(1000);
+    ESP.restart();
+  }
+  Serial.printf("\nWi-Fi connected, IP = %s\n", WiFi.localIP().toString().c_str());
+}
+
+//--------------------------------------------------------------------------------
+// Connect (or reconnect) to MQTT broker
+// Returns true on success
+//--------------------------------------------------------------------------------
+bool connectMQTT() {
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("Wi-Fi not connected; skipping MQTT connect");
+    return false;
+  }
+
+  Serial.printf("Connecting to MQTT %s:%u …\n", mqttServer, mqttPort);
+  if (mqtt.connect(deviceName)) {
+    Serial.println("MQTT connected");
+    return true;
+  } else {
+    int16_t state = mqtt.state();
+    Serial.printf("MQTT failed, rc=%d\n", state);
+    return false;
+  }
+}
+
+//--------------------------------------------------------------------------------
+// Return a random float in [minVal, maxVal)
+//--------------------------------------------------------------------------------
+float randf(float minVal, float maxVal) {
+  return minVal + (random(0, 10000) / 10000.0f) * (maxVal - minVal);
+}
+

@@ -1,0 +1,10 @@
+.stm-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.45); display:flex; align-items:center; justify-content:center; z-index:99999;
+}
+.stm-modal { background:#fff; padding:18px; border-radius:8px; width:90%; max-width:900px; max-height:90vh; overflow:auto; box-shadow:0 10px 30px rgba(0,0,0,0.4); }
+.stm-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.stm-close { background:transparent; border:none; font-size:22px; cursor:pointer; }
+.stm-body { padding-top: 6px; }
+.stm-table { width:100%; border-collapse: collapse; }
+.stm-table th, .stm-table td { border: 1px solid #ddd; padding:8px; }
+.stm-error { color: #900; margin-bottom:8px; }

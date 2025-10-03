@@ -1,0 +1,65 @@
+/* Global responsive adjustments */
+
+/* Breakpoints
+   --lg: 1200px
+   --md: 992px
+   --sm: 768px
+   --xs: 576px
+*/
+
+/* Base mobile-first tweaks */
+html, body { -webkit-text-size-adjust: 100%; }
+
+/* Sidebar collapses on small screens */
+@media (max-width: 900px) {
+  .admin-dashboard { flex-direction: column; }
+  .admin-sidebar { width: 100% !important; padding: 12px !important; position: relative; }
+  .admin-sidebar.closed { width: 0; padding:0; }
+  .admin-main { padding: 16px !important; }
+  .admin-user-top { padding: 16px !important; }
+  .admin-add-card-btn { width: 64px; height:64px; font-size: 24px; }
+  .admin-device-card { min-width: 0; width: 100%; }
+}
+
+@media (max-width: 700px) {
+  .stats-chart { height: 320px !important; }
+  .graph-300 { height: 240px; }
+  .chart-420 { height: 320px; }
+  .admin-device-graph { margin: 12px 0; }
+  .admin-graph-controls { flex-wrap: wrap; }
+  .admin-graph-controls select { width: 140px; }
+}
+
+@media (max-width: 600px) {
+  .stats-controls { flex-direction: column; align-items: stretch; }
+  .stats-date { width: 100%; }
+  .w-220 { width: 100%; }
+  .admin-add-card-label { display: inline-block; margin-left: 8px; font-size: 16px; }
+  .logs-days, .logs-table { max-height: 40vh; }
+  .modal, .sdm-modal, .stm-modal, .apm-modal, .modal-debug { width: 96% !important; }
+}
+
+@media (max-width: 480px) {
+  .admin-device-card { padding: 16px; }
+  .admin-top-title { font-size: 18px; }
+  .admin-user-details { font-size: 16px; }
+  .card-pair { gap: 12px; }
+  .gap-24 { gap: 16px; }
+  .admin-add-card-btn { width: 56px; height:56px; }
+  .no-data { padding: 24px; font-size: 14px; }
+  .stats-chart { height: 260px !important; }
+}
+
+/* Utility helpers */
+.hide-on-mobile { display: none !important; }
+@media (min-width: 901px) { .hide-on-mobile { display: none !important; } }
+@media (max-width: 900px) { .show-on-mobile { display: block !important; } }
+.show-on-mobile { display: none !important; }
+
+.scroll-x { overflow-x: auto; }
+.mobile-full-width { width: 100% !important; }
+
+/* Tables: wrap long pre blocks */
+@media (max-width: 700px) {
+  pre.pre-wrap { white-space: pre-wrap; word-break: break-word; }
+}

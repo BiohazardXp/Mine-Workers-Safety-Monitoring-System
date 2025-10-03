@@ -1,0 +1,27 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^7.0.1",
+    "@fortawesome/free-solid-svg-icons": "^7.0.1",
+    "@fortawesome/react-fontawesome": "^3.0.2",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "mqtt": "^5.13.2",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.14.5",
+    "uuid": "^11.1.0",
+    "ws": "^8.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

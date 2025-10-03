@@ -1,0 +1,101 @@
+const http = require("http");
+const {WebSocketServer} = require('ws');
+const uuidv4 = require("uuid").v4
+const url = require('url')
+const server = http.createServer();
+const wsServer = new WebSocketServer({server})
+const port = 8000;
+const connections = {};
+const users = {};
+const minerData = {}
+
+// publish tasmota/lamp1/tele/SENSOR 
+
+let jhj = {"Peter": { "Temperature":"24.6", "Humidity":"60", "Pressure":"70"}, "James": { "Temperature":"76.8", "Humidity":"98.9", "Pressure":"88.5"}, "Mark": { "Temperature":"45.8", "Humidity":"65.8", "Pressure":"09.9"} }
+
+
+const broadcastUsers = () =>{
+
+     Object.keys(connections).forEach(uuid=>{
+        const connection = connections[uuid];
+        const message = JSON.stringify(minerData);
+        connection.send(message);
+     })
+}
+
+
+const handleMessage = (bytes, uuid) =>{
+    const message = JSON.parse(bytes.toString());
+    // const user =  users[uuid]
+    // user.state = message;
+    broadcastUsers();
+    console.log(message)
+}
+
+const handleClose = uuid =>{
+    // console.log(`${users[uuid].username} disconnected`)
+    delete connections[uuid];
+    // delete users[uuid];
+    broadcastUsers();
+};
+
+wsServer.on("connection", (connection, request) =>{
+    //  const {username} = url.parse(request.url, true).query;
+     const uuid = uuidv4();
+     connections[uuid] = connection;
+
+    //  users[uuid] = {
+    //       username,
+    //      state: {} 
+    //  }
+    connection.on('message', message => handleMessage(message, uuid));
+    
+    connection.on('close', ()=> handleClose(uuid))
+
+})
+
+server.listen(port, ()=>{
+    console.log(`listening at port ${port}`)
+})
+
+
+//mqtt
+
+
+const mqtt = require('mqtt');
+const fs = require('fs');
+const { time } = require('console');
+
+
+const client = mqtt.connect('mqtt://192.168.8.100');
+
+client.on('connect', () => {
+  console.log('Connected to MQTT broker');
+  client.subscribe('tasmota/lamp1/tele/SENSOR', (err) => {
+    if (err) {
+      console.error('Subscription error:', err);
+    } else {
+      console.log('Subscribed to esp32/sensor/random');
+    }
+  });
+});
+
+client.on('message', (topic, message) => {
+  try {
+    const raw = JSON.parse(message.toString());
+    minerData = {
+      miner: raw.Miner,
+      state: {
+        time: new Date().toISOString(),
+        Temperature: raw.Temperature,
+        Humidity: raw.Humidity,
+        Pressure: raw.Pressure
+      }
+    };
+
+    console.log(`[${topic}]`, data);
+    fs.appendFileSync('sensor-log.txt', `${new Date().toISOString()} - ${JSON.stringify(data)}\n`);
+  } catch (err) {
+    console.error('Invalid JSON:', message.toString());
+  }
+});
