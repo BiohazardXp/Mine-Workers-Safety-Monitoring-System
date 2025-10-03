@@ -4,7 +4,7 @@ const mysql = require('mysql2');
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'kondwani1',
+  password: '',
   database: 'mining_safety' // Change this to your actual database name
 });
 

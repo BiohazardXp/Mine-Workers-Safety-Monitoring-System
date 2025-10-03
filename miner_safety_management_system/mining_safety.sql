@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `devicedb` (
   `device_id` int NOT NULL,
   `device_name` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `devicedb`
@@ -50,7 +50,7 @@ INSERT INTO `devicedb` (`device_id`, `device_name`) VALUES
 CREATE TABLE `device_assignment` (
   `emp_id` int NOT NULL,
   `device_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `device_assignment`
@@ -72,7 +72,7 @@ CREATE TABLE `employees` (
   `first_name` text NOT NULL,
   `surname` text NOT NULL,
   `position` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `employees`
@@ -97,7 +97,7 @@ CREATE TABLE `login` (
   `username` text NOT NULL,
   `position` text NOT NULL,
   `password` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `login`
@@ -122,7 +122,7 @@ CREATE TABLE `thresholds` (
   `warning_exposure` varchar(20) DEFAULT NULL,
   `critical_threshold` decimal(10,2) DEFAULT NULL,
   `critical_exposure` varchar(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `thresholds`
